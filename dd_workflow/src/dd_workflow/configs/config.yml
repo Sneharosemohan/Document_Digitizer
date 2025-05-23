@@ -7,11 +7,11 @@ general:
 
   front_end:
     _type: fastapi
-    middleware:
-      - _type: cors
-        allow_origins: ["*"]
-        allow_methods: ['GET', 'POST', 'PUT', 'DELETE']
-        allow_credentials: True
+    # middleware:
+    #   - _type: cors
+    #     allow_origins: ["*"]
+    #     allow_methods: ['GET', 'POST', 'PUT', 'DELETE']
+    #     allow_credentials: True
     port: 8080
     endpoints:
       - path: /save_data
@@ -91,6 +91,22 @@ functions:
     url: "http://0.0.0.0:7080/sse"
     mcp_tool_name: verify_sharecert_seal_llama4
     description: "This is a wrapper for the MCP tool that verifies the sharecert seal using llama4 model. It takes one input as object_id_1: str and return the response as a dict."
+  fetch_emails_tool:
+    _type: mcp_tool_wrapper
+    url: "http://0.0.0.0:7080/sse"
+    mcp_tool_name: fetch_emails
+    description: "This is a wrapper for the MCP tool that fetches emails with a given email_id and password."
+  generate_email_tool:
+    _type: mcp_tool_wrapper
+    url: "http://0.0.0.0:7080/sse"
+    mcp_tool_name: generate_email
+    description: "This is a wrapper for the MCP tool that generate required email from a provided json data."
+  send_email_tool:
+    _type: mcp_tool_wrapper
+    url: "http://0.0.0.0:7080/sse"
+    mcp_tool_name: send_email
+    description: "This is a wrapper for the MCP tool to send email to a receiver email. It takes subject and body as inputs."
+
 
 llms:
   nim_llm:
@@ -113,6 +129,9 @@ workflow:
     - compare_face_images_tool
     - compare_signature_images_tool
     - verify_sharecert_seal_llama4_tool
+    - fetch_emails_tool 
+    - generate_email_tool
+    - send_email_tool
   verbose: true
   llm_name: nim_llm
   name: react_agent
@@ -131,6 +150,7 @@ workflow:
     Do not upload the files again if they are already uploaded.
     Upload the files only if the user asks to upload files.
     Only use the tool {{extract_data_tool}} to extract data from the files if the question is related to the data present in the files.
+    Use {{send_email_tool}} to send email and {{generate_email_tool}} to prepare the content of emal.
 
     You may respond in one of two formats.
     Use the following format exactly to communicate with an expert:

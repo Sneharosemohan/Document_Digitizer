@@ -1,0 +1,237 @@
+# SPDX-FileCopyrightText: Copyright (c) 2025, NVIDIA CORPORATION & AFFILIATES. All rights reserved.
+# SPDX-License-Identifier: Apache-2.0
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+# http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+general:
+  use_uvloop: true
+  logging:
+    console:
+      _type: console
+      level: WARN
+
+  front_end:
+    _type: fastapi
+    middleware:
+      - _type: cors
+        allow_origins: ["*"]
+        allow_methods: "*"
+        allow_headers: "*"
+    port: 8080
+    endpoints:
+      - path: /save_data
+        method: POST
+        description: "Agent endpoint for documents ingestion."
+        function_name: upload_files_tool
+
+memory:
+  saas_memory:
+    _type: mem0_memory
+
+functions:
+  get_attachment_name_by_id_tool:
+    _type: mcp_tool_wrapper
+    url: "http://0.0.0.0:7080/sse"
+    mcp_tool_name: get_attachment_name_by_id
+    description: "This is a wrapper for the MCP tool that allows you to get the attachment name for a given objectId as string."
+  get_attachment_id_by_name_tool:
+    _type: mcp_tool_wrapper
+    url: "http://0.0.0.0:7080/sse"
+    mcp_tool_name: get_attachment_id_by_name
+    description: "This is a wrapper for the MCP tool that allows you to get the attachment ObjectId for a given attachment_name"
+  list_collections_tool:
+    _type: mcp_tool_wrapper
+    url: "http://0.0.0.0:7080/sse"
+    mcp_tool_name: list_collections
+    description: "This is a wrapper for the MCP tool that gives all collections in the MongoDB database."
+  upload_files_tool:
+    _type: mcp_tool_wrapper
+    url: "http://0.0.0.0:7080/sse"
+    mcp_tool_name: upload_files
+    description: "This is a wrapper for the MCP tool that uploads all files to a attachment_folder and gives a list of dict containing the id and the attachment name. Input is given as a list of filepaths as a first element of another list. For example: [[filepath1, filepath2, filepath3]]."
+  get_files_tool:
+    _type: mcp_tool_wrapper
+    url: "http://0.0.0.0:7080/sse"
+    mcp_tool_name: get_files
+    description: "This is a wrapper for the MCP tool that gets all uploaded files for a given list of ObjectIDs as a zip file."
+  extract_data_tool:
+    _type: mcp_tool_wrapper
+    url: "http://0.0.0.0:7080/sse"
+    mcp_tool_name: extract_data
+    description: "This is a wrapper for the MCP tool that extract data present in a file with the given object_id. Return the response obtained as json even if it is an error or not relevant."
+  ask_question_tool:
+    _type: mcp_tool_wrapper
+    url: "http://0.0.0.0:7080/sse"
+    mcp_tool_name: ask_question
+    description: "This is a wrapper for the MCP tool that answer given question using the given data in json format. It is used for asking questions based on the extracted data from a file. Do not use it for debugging."
+  dd_add_memory_tool:
+    _type: dd_add_memory
+    memory: saas_memory
+    description: |
+      Always call this tool to add every answer obtained by the agent to long term memory. 
+      The input to this tool should be a string and in human-readable format.
+  dd_get_memory_tool:
+    _type: dd_get_memory
+    memory: saas_memory
+    description: |
+      Always call this tool before calling any other tools, even if the user does not mention to use it.
+      Use this tool to get the existing memory of the user. It will be used to understand the context of the conversation.
+  compare_face_images_tool:
+    _type: mcp_tool_wrapper
+    url: "http://0.0.0.0:7080/sse"
+    mcp_tool_name: compare_face_images
+    description: "This is a wrapper for the MCP tool that compares faces present in two images. It takes two inputs as object_id_1: str, object_id_2: str and return the response as a dict containing the similarity score and time taken to compare the images."
+  compare_signature_images_tool:
+    _type: mcp_tool_wrapper
+    url: "http://0.0.0.0:7080/sse"
+    mcp_tool_name: compare_signature_images
+    description: "This is a wrapper for the MCP tool that compares signatures present in two images. It takes two inputs as object_id_1: str, object_id_2: str and return the response as a dict containing the similarity score and time taken to compare the images."
+  verify_sharecert_seal_llama4_tool:
+    _type: mcp_tool_wrapper
+    url: "http://0.0.0.0:7080/sse"
+    mcp_tool_name: verify_sharecert_seal_llama4
+    description: "This is a wrapper for the MCP tool that verifies the sharecert seal using llama4 model. It takes one input as object_id_1: str and return the response as a dict."
+
+llms:
+  nim_llm:
+    _type: nim
+    model_name: meta/llama-3.3-70b-instruct
+    temperature: 0
+    max_tokens: 4096
+    top_p: 1
+  nim_rag_eval_llm:
+    _type: nim
+    model_name: meta/llama-3.3-70b-instruct
+    temperature: 0.0000001
+    top_p: 0.0001
+    max_tokens: 2
+  nim_trajectory_eval_llm:
+    _type: nim
+    model_name: meta/llama-3.1-70b-instruct
+    temperature: 0.0
+    max_tokens: 1024
+
+  
+workflow:
+  _type: react_agent
+  tool_names: 
+    # - get_attachment_name_by_id_tool
+    - get_attachment_id_by_name_tool
+    - upload_files_tool 
+    # - get_files_tool
+    - extract_data_tool
+    # - ask_question_tool
+    - dd_add_memory_tool
+    - dd_get_memory_tool
+    - compare_face_images_tool
+    - compare_signature_images_tool
+    - verify_sharecert_seal_llama4_tool
+  verbose: true
+  llm_name: nim_llm
+  name: react_agent
+  # system_prompt: "You are a helpful assistant that can answer questions about the extracted data present in uploaded documents. You can also upload files to the Document Digitizer with upload_files_tool and extract data from them using {extract_data_tool}. The object_id of the uploaded files will be returned to you from the {upload_files_tool}. You can also ask questions about the data present in the files using {ask_question_tool}. You can also get the attachment name for a given ObjectID using {get_attachment_name_by_id_tool}."
+  # additional_instructions: |
+  #   - "If you are not sure about the answer, please ask for clarification."
+  #   - "If you need to upload files, please provide the file paths in a list."
+  #   - "If you need to extract data from a file, please provide the ObjectID of the file. To get objectID, you can use the get_attachment_name_by_id_tool."
+  #   - "If you need to ask a question about the data, please provide the question in a clear and concise manner."
+  # additional_instructions: "If you need to extract data from a file, please provide the object_id of the file. Return the response obtained even if it is an error or not relevant. It should be included in Agent Thought."
+  # To get object_id, you can use the get_attachment_name_by_id_tool to get list of ObjectIds matching the given attachment name. If you need to ask a question about the data, please provide the question in a clear and concise manner."
+  
+  system_prompt: |
+    Answer the following questions as best you can. 
+    You may communicate and collaborate with various {tools} to answer the questions in human-readable format. 
+    Use a unique id for each user_id in a single conversation.
+    Always use the tool {{dd_get_memory_tool}} to get previous conversation response of agent to understand the context of conversation before calling other tools.
+    Always use the tool {{dd_add_memory_tool}} as the last tool to add final answer obtained by the agent to long term memory. 
+    Modify the input json to parse structured tool input from Action Input. Make the input of  {{dd_add_memory_tool}} in a human-readable format before adding to the memory if it is json. 
+
+    Skip using the tool {{dd_add_memory_tool}} if the Action Input is None or empty.
+    Use appropriate tools in [{tool_names}] to answer the questions.
+    Always use the tool {{get_attachment_id_by_name_tool}} to get the attachment ObjectId for a given attachment_name.
+    Always check if the file is already uploaded before uploading it again.
+    Do not upload the files again if they are already uploaded.
+    Upload the files only if the user asks to upload files.
+    Only use the tool {{extract_data_tool}} to extract data from the files if the question is related to the data present in the files.
+
+    You may respond in one of two formats.
+    Use the following format exactly to communicate with an expert:
+
+    Question: the input question you must answer
+    Thought: you should always think about what to do
+    Action: the action to take, should be one of [{tool_names}]
+    Action Input: the input to the action (if there is no required input, include "Action Input: None")
+    Observation: wait for the expert to respond, do not assume the expert's response
+
+    ... (this Thought/Action/Action Input/Observation can repeat N times.)
+    Use the following format once you have the final answer:
+
+    Thought: I now know the final answer
+    Final Answer: the final answer to the original input question
+
+
+
+  additional_instructions: | 
+    You are a Chat-based assistant that can answer questions and compare faces present in images.
+    Always use the tool {dd_get_memory} to get previous conversation response of agent to understand the context of conversation before calling other tools. 
+    Always add the final response obtained by the agent to long term memory using {dd_add_memory_tool}. 
+    Also add the question asked by the user to long term memory. 
+    You can also get the existing memory of the user using {dd_get_memory_tool} tool. It will be used to understand the context of the conversation. 
+    Always give the final response as a human-readable format.
+  
+  # You can also upload files to the Document Digitizer with upload_files_tool and extract data from them using {extract_data_tool}. 
+  
+  max_history: 10
+  
+eval:
+  general:
+    output_dir: .
+    dataset:
+      _type: json
+      file_path: data/dd_dataset.json
+    profiler:
+      # Compute inter query token uniqueness
+      token_uniqueness_forecast: true
+      # Compute expected workflow runtime
+      workflow_runtime_forecast: true
+      # Compute inference optimization metrics
+      compute_llm_metrics: true
+      # Avoid dumping large text into the output CSV (helpful to not break structure)
+      csv_exclude_io_text: true
+      # Idenitfy common prompt prefixes
+      prompt_caching_prefixes:
+        enable: true
+        min_frequency: 0.1
+      bottleneck_analysis:
+        # Can also be simple_stack
+        enable_nested_stack: true
+      concurrency_spike_analysis:
+        enable: true
+        spike_threshold: 7
+
+  evaluators:
+    rag_accuracy:
+      _type: ragas
+      metric: AnswerAccuracy
+      llm_name: nim_rag_eval_llm
+    rag_groundedness:
+      _type: ragas
+      metric: ResponseGroundedness
+      llm_name: nim_rag_eval_llm
+    rag_relevance:
+      _type: ragas
+      metric: ContextRelevance
+      llm_name: nim_rag_eval_llm
+    trajectory_accuracy:
+      _type: trajectory
+      llm_name: nim_trajectory_eval_llm
