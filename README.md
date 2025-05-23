@@ -1,3 +1,4 @@
+![Document_Digtizer_architecture](https://github.com/user-attachments/assets/fdbadfc0-56b2-4674-b59d-1571b072d21d)
 # Document_Digitizer
 The Document Digitizer represents a sophisticated solution for efficiently extracting textual content, signatures, and seals from various documents while ensuring their authenticity. By incorporating leading-edge AI technologies and intelligent agent orchestration frameworks such as NVIDIA Agent IQ and CrewAI, alongside MCP protocols, it optimizes digital workflows to deliver enhanced accuracy and robust security in document processing.
 ## Tech Stack
