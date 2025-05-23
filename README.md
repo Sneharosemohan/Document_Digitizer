@@ -18,35 +18,52 @@ The Document Digitizer offers several advantages that make it indispensable for 
 <img width="1085" alt="DD_Architectural_Diagram" src="https://github.com/user-attachments/assets/74457962-a7d9-4661-a95f-210f477262bf" />
 
 ## Steps to Run Document Digitizer
+
 1.**Clone the Repository and Start MongoDB**
+
   Clone this repository to your local machine.
+  
   Ensure your MongoDB server is running.
  
-2. **Install NVIDIA AgentIQ Toolkit**
+2. **Install NVIDIA AgentIQ Toolkit** 
+
   Follow the official instructions as per the official documentation : https://github.com/NVIDIA/AIQToolkit
 
 3. **Activate the Python Virtual Environment and Set Environment Variables**
-   Activate your .venv as per the installation steps.
+   
+   Activate your .venv as per the installation steps
+   
    Export the required environment variables:
+   
      export NVIDIA_API_KEY=nvapi-...
+   
      export MEM0_API_KEY=m0-...
 
 4. **Install Python Requirements**
+   
   Navigate to the mcp_dd folder and install dependencies:
+  
     pip install -r mcp_dd/requirements.txt
 
 5. **Add Environment Variables to .env File**
+   
    In your .env file, add:
+   
      LLAMA3_2_90B_VISION_INSTRUCT_NIM_KEY=nvapi-...
 
 6. **Start the MCP Server**
+
    Run the following command: python mcp_dd/dd_mcp_server.py
 
 7. **Start the NVIDIA AIQ Server**
+
    Use the serve command: aiq serve --config_file dd_aiq_workflow/src/dd_aiq_workflow/configs/config.yml
 
 **Note**:
+
 Replace nvapi-... and m0-... with your actual API keys.
+
 Make sure all dependencies are installed and environment variables are set before starting the servers.---
+
 If you intend to use the email feature, update the sender email and password in mcp_dd/dd_mcp_server.py with your own credentials before running the application.
 
