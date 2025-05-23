@@ -1,0 +1,12 @@
+pymongo 
+tensorflow 
+deepface 
+tf-keras
+langchain_mcp_adapters
+email
+FastAPI
+mcp
+
+
+
+

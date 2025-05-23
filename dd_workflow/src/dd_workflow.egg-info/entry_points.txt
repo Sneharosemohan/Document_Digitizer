@@ -1,0 +1,2 @@
+[aiq.components]
+dd_workflow = dd_workflow.register

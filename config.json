@@ -1,0 +1,17 @@
+{
+    "mongodb": {
+        "uri": "mongodb://localhost:27017",
+        "database": "document_digitizer",
+        "collections": {
+            "attachments" : "attachments",
+            "emails" : "emails",
+            "users" : "users",
+            "reference_documents": "reference_documents"
+        }
+    },
+    "mcp_server" : {
+        "host": "0.0.0.0",
+        "port": 7080
+    }
+
+}

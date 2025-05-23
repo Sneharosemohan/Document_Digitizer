@@ -1,0 +1,160 @@
+general:
+  use_uvloop: true
+  logging:
+    console:
+      _type: console
+      level: WARN
+
+  front_end:
+    _type: fastapi
+    middleware:
+      - _type: cors
+        allow_origins: ["*"]
+        allow_methods: ['GET', 'POST', 'PUT', 'DELETE']
+        allow_credentials: True
+    port: 8080
+    endpoints:
+      - path: /save_data
+        method: POST
+        description: "Agent endpoint for documents ingestion."
+        file_parameters: {"name": "file_paths", "type": "UploadFile", "description": "File to upload.", "required": True}
+        function_name: upload_files_tool
+     
+
+memory:
+  saas_memory:
+    _type: mem0_memory
+
+functions:
+  get_attachment_name_by_id_tool:
+    _type: mcp_tool_wrapper
+    url: "http://0.0.0.0:7080/sse"
+    mcp_tool_name: get_attachment_name_by_id
+    description: | 
+                  This is a wrapper for the MCP tool that allows you to 
+                  get the attachment name for a given objectId as string.
+  get_attachment_id_by_name_tool:
+    _type: mcp_tool_wrapper
+    url: "http://0.0.0.0:7080/sse"
+    mcp_tool_name: get_attachment_id_by_name
+    description: "This is a wrapper for the MCP tool that allows you to get the attachment ObjectId for a given attachment_name"
+  list_collections_tool:
+    _type: mcp_tool_wrapper
+    url: "http://0.0.0.0:7080/sse"
+    mcp_tool_name: list_collections
+    description: "This is a wrapper for the MCP tool that gives all collections in the MongoDB database."
+  upload_files_tool:
+    _type: mcp_tool_wrapper
+    url: "http://0.0.0.0:7080/sse"
+    mcp_tool_name: upload_files
+    description: "This is a wrapper for the MCP tool that uploads all files to a attachment_folder and gives a list of dict containing the id and the attachment name. Input is given as a list of filepaths as a first element of another list. For example: [[filepath1, filepath2, filepath3]]."
+  get_files_tool:
+    _type: mcp_tool_wrapper
+    url: "http://0.0.0.0:7080/sse"
+    mcp_tool_name: get_files
+    description: "This is a wrapper for the MCP tool that gets all uploaded files for a given list of ObjectIDs as a zip file."
+  extract_data_tool:
+    _type: mcp_tool_wrapper
+    url: "http://0.0.0.0:7080/sse"
+    mcp_tool_name: extract_data
+    description: "This is a wrapper for the MCP tool that extract data present in a file with the given object_id. Return the response obtained as json even if it is an error or not relevant."
+  ask_question_tool:
+    _type: mcp_tool_wrapper
+    url: "http://0.0.0.0:7080/sse"
+    mcp_tool_name: ask_question
+    description: "This is a wrapper for the MCP tool that answer given question using the given data in json format. It is used for asking questions based on the extracted data from a file. Do not use it for debugging."
+  dd_add_memory_tool:
+    _type: dd_add_memory
+    memory: saas_memory
+    description: |
+      Always call this tool to add every answer obtained by the agent to long term memory. 
+      The input to this tool should be a string and in human-readable format.
+  dd_get_memory_tool:
+    _type: dd_get_memory
+    memory: saas_memory
+    description: |
+      Always call this tool before calling any other tools, even if the user does not mention to use it.
+      Use this tool to get the existing memory of the user. It will be used to understand the context of the conversation.
+      Input to this tool is a json object like {"query": "query" , "top_k": 5, "user_id": "12345"} where query is the input question asked by the user, top_k is the number of previous conversation response to be fetched and user_id is the unique id for each user in a single conversation.
+  compare_face_images_tool:
+    _type: mcp_tool_wrapper
+    url: "http://0.0.0.0:7080/sse"
+    mcp_tool_name: compare_face_images
+    description: "This is a wrapper for the MCP tool that compares faces present in two images. It takes two inputs as object_id_1: str, object_id_2: str and return the response as a dict containing the similarity score and time taken to compare the images."
+  compare_signature_images_tool:
+    _type: mcp_tool_wrapper
+    url: "http://0.0.0.0:7080/sse"
+    mcp_tool_name: compare_signature_images
+    description: "This is a wrapper for the MCP tool that compares signatures present in two images. It takes two inputs as object_id_1: str, object_id_2: str and return the response as a dict containing the similarity score and time taken to compare the images."
+  verify_sharecert_seal_llama4_tool:
+    _type: mcp_tool_wrapper
+    url: "http://0.0.0.0:7080/sse"
+    mcp_tool_name: verify_sharecert_seal_llama4
+    description: "This is a wrapper for the MCP tool that verifies the sharecert seal using llama4 model. It takes one input as object_id_1: str and return the response as a dict."
+
+llms:
+  nim_llm:
+    _type: nim
+    model_name: meta/llama-3.3-70b-instruct
+    temperature: 0
+    max_tokens: 4096
+    top_p: 1
+
+workflow:
+  _type: react_agent
+  tool_names: 
+    # - get_attachment_name_by_id_tool
+    - get_attachment_id_by_name_tool
+    - upload_files_tool 
+    # - get_files_tool
+    - extract_data_tool
+    - dd_add_memory_tool
+    - dd_get_memory_tool
+    - compare_face_images_tool
+    - compare_signature_images_tool
+    - verify_sharecert_seal_llama4_tool
+  verbose: true
+  llm_name: nim_llm
+  name: react_agent
+  system_prompt: |
+    Answer the following questions as best you can. 
+    You may communicate and collaborate with various {tools} to answer the questions in human-readable format. 
+    Use a unique id for each user_id in a single conversation.
+    Always use the tool {{dd_get_memory_tool}} to get previous conversation response of agent to understand the context of conversation before calling other tools.
+    Always use the tool {{dd_add_memory_tool}} as the last tool to add final answer obtained by the agent to long term memory. 
+    Modify the input json to parse structured tool input from Action Input. Make the input of  {{dd_add_memory_tool}} in a human-readable format before adding to the memory if it is json. 
+
+    Skip using the tool {{dd_add_memory_tool}} if the Action Input is None or empty.
+    Use appropriate tools in [{tool_names}] to answer the questions.
+    Always use the tool {{get_attachment_id_by_name_tool}} to get the attachment ObjectId for a given attachment_name.
+    Always check if the file is already uploaded before uploading it again.
+    Do not upload the files again if they are already uploaded.
+    Upload the files only if the user asks to upload files.
+    Only use the tool {{extract_data_tool}} to extract data from the files if the question is related to the data present in the files.
+
+    You may respond in one of two formats.
+    Use the following format exactly to communicate with an expert:
+
+    Question: the input question you must answer
+    Thought: you should always think about what to do
+    Action: the action to take, should be one of [{tool_names}]
+    Action Input: the input to the action (if there is no required input, include "Action Input: None")
+    Observation: wait for the expert to respond, do not assume the expert's response
+
+    ... (this Thought/Action/Action Input/Observation can repeat N times.)
+    Use the following format once you have the final answer:
+
+    Thought: I now know the final answer
+    Final Answer: the final answer to the original input question
+
+
+  additional_instructions: | 
+    You are a Chat-based assistant that can answer questions and compare faces present in images.
+    Always use the tool {dd_get_memory} to get previous conversation response of agent to understand the context of conversation before calling other tools. 
+    Always add the final response obtained by the agent to long term memory using {dd_add_memory_tool}. 
+    Also add the question asked by the user to long term memory. 
+    You can also get the existing memory of the user using {dd_get_memory_tool} tool. It will be used to understand the context of the conversation. Send the agent input as query to the {dd_get_memory_tool} tool.
+    Always give the final response as a human-readable format.
+    
+  max_history: 10
+  
