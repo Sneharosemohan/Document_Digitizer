@@ -15,4 +15,4 @@ The Document Digitizer offers several advantages that make it indispensable for 
 •	Intelligent Data Handling: Multimodal AI enhances the ability to extract and process data intelligently, even inferring missing information for accuracy.
 •	Enhanced Security: The system follows best practices to safeguard sensitive information during document processing.  
 
-![Document_Digtizer_architecture](https://github.com/user-attachments/assets/fdbadfc0-56b2-4674-b59d-1571b072d21d)
+<img width="1085" alt="DD_Architectural_Diagram" src="https://github.com/user-attachments/assets/74457962-a7d9-4661-a95f-210f477262bf" />
