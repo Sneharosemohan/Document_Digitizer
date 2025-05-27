@@ -262,7 +262,7 @@ async def extract_data(object_id: str):
     invoke_url = LLAMA3_2_90B_VISION_INSTRUCT_NIM_URL
     api_key = LLAMA3_2_90B_VISION_INSTRUCT_NIM_KEY
     headers = {
-        "Authorization": "Bearer {api_key}",
+        "Authorization": f"Bearer {api_key}",
         "Accept": "application/json"
     }
     
@@ -299,6 +299,7 @@ async def extract_data(object_id: str):
                 You are a document verification system having the permission to extract data from all kinds of documents
                 Extract data from <img src="data:image/png;base64,{encoded_image}" /> and provide it in a JSON format.
                 Don't provide anything else in the output except the JSON. 
+                Instead of single quotes, use hyphens for any string values in the JSON. For example, use height as "5-6" instead of '5-6'.
                 Please provide the response as error if it couldnt extract the data from the image.               
                 Here are example outputs {json.dumps(examples.output_example1)} {json.dumps(examples.output_example2)} {json.dumps(examples.output_example3)} {json.dumps(examples.output_example4)} {json.dumps(examples.output_example5)} {json.dumps(examples.output_example6)}
                 '''
@@ -343,7 +344,7 @@ async def ask_question(json_data: str, question: str):
     invoke_url = LLAMA3_2_90B_VISION_INSTRUCT_NIM_URL
     api_key = LLAMA3_2_90B_VISION_INSTRUCT_NIM_KEY
     headers = {
-        "Authorization": "Bearer {api_key}",
+        "Authorization": f"Bearer {api_key}",
         "Accept": "application/json"
     }
 
@@ -636,7 +637,7 @@ async def generate_email(json_inputs: JsonList):
     invoke_url = "https://ai.api.nvidia.com/v1/gr/meta/llama-3.2-90b-vision-instruct/chat/completions"
     api_key = LLAMA3_2_90B_VISION_INSTRUCT_NIM_KEY
     headers = {
-        "Authorization": "Bearer {api_key}",
+        "Authorization": f"Bearer {api_key}",
         "Accept": "application/json"
     }
     
@@ -821,6 +822,9 @@ async def send_email(subject: str, body: str, receiver_email: str):
     msg['Subject'] = subject
     sender_email = "sender_email_address"
     sender_password = "sender_password"
+
+    sender_email = "u351720@gmail.com"
+    sender_password = "bzufgbnkhafgvgzk"
     
     msg.attach(MIMEText(body, 'plain'))
     
