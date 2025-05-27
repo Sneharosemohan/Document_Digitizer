@@ -5,9 +5,16 @@ import imaplib
 import smtplib
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
+import os 
+import sys
+import nest_asyncio
+nest_asyncio.apply()
 
 #Constants
-ATTACHMENT_FOLDER = "./data/email_attachments"
+# Get the directory of the current script
+BASE_DIR = os.getcwd()
+CONFIG_FILEPATH = os.path.join(BASE_DIR, "config.json")
+EMAIL_FOLDER = os.path.join(BASE_DIR, "data/email_attachments")
 
 def get_imap_server(username):
     imap_servers = {
@@ -40,7 +47,7 @@ def fetch_email_details(mail, email_id):
                     if "attachment" in content_disposition:
                         filename = part.get_filename()
                         if filename:
-                            filepath = os.path.join(ATTACHMENT_FOLDER, filename)
+                            filepath = os.path.join(EMAIL_FOLDER, filename)
                             if not os.path.exists(filepath):
                                 with open(filepath, "wb") as f:
                                     f.write(part.get_payload(decode=True))

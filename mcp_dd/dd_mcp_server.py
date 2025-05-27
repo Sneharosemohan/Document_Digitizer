@@ -39,7 +39,7 @@ from mcp.server.fastmcp import FastMCP
 
 #Importing libraries for utility files
 from email_utility import get_imap_server, fetch_email_details
-from attachment_utility import get_attachment_name
+from attachment_utility import get_attachment_name, get_document_type
 from utility import image_to_base64
 from comparison_utility import face_similarity_matching, similarity_matching,get_image_embedding
 import exampleOutputs as examples
@@ -52,14 +52,15 @@ nest_asyncio.apply()
 
 #Constants
 # Get the directory of the current script
-BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+BASE_DIR = os.getcwd()
+# BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 
 # Construct the relative path to config.json
-CONFIG_FILEPATH = os.path.join(BASE_DIR, "../config.json")
-ATTACHMENT_FOLDER = os.path.join(BASE_DIR, "../data/upload_documents")
+CONFIG_FILEPATH = os.path.join(BASE_DIR, "config.json")
+ATTACHMENT_FOLDER = os.path.join(BASE_DIR, "data/upload_documents")
 
-# Optionally, add BASE_DIR to sys.path if you want to import modules from the project root
-sys.path.append(BASE_DIR)
+# # Optionally, add BASE_DIR to sys.path if you want to import modules from the project root
+# sys.path.append(BASE_DIR)
 
 MODEL_NAME = "meta/llama-3.2-90b-vision-instruct"
 MODEL_NAME_CHEQUE = 'meta/llama-4-maverick-17b-128e-instruct'
@@ -178,17 +179,20 @@ async def upload_files(files: List):
         # Save the attachment to the folder
         # Copy the file from the given file path to the attachment folder using shutil
         shutil.copy(file, attachment_path)
+        attach_doc_type = get_document_type(attachment_name)
         
         # Add the attachment to the database
         attachment_data = {
             "attachment_name": attachment_name,
             "attachment_path": attachment_path,
+            "attachment_type": attach_doc_type["document_type"]
         }
         result = attachments_collection.insert_one(attachment_data)
         
         uploaded_files.append({
             "attachment_name": attachment_name,
             "attachment_path": attachment_path,
+            "attachment_type": attach_doc_type["document_type"],
             "id": str(result.inserted_id)
         })
     

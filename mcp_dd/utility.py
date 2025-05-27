@@ -5,9 +5,17 @@ import pymongo
 from pymongo import MongoClient
 from bson import ObjectId
 import json
+from PIL import Image
+import os
+import nest_asyncio
+nest_asyncio.apply()
 
+#Constants
+# Get the directory of the current script
+BASE_DIR = os.getcwd()
 
-CONFIG_FILEPATH = "./config.json"
+CONFIG_FILEPATH = os.path.join(BASE_DIR, "config.json")
+
 
 
 with open(CONFIG_FILEPATH, 'r') as f:
