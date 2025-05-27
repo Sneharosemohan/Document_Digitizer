@@ -7,6 +7,9 @@ email
 FastAPI
 mcp
 fastapi_mcp
+secure-smtplib
+imaplib2
+pytest-shutil
 
 
 

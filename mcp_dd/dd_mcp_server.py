@@ -16,6 +16,9 @@ load_dotenv()
 import email
 from email.header import decode_header
 import imaplib
+import smtplib
+from email.mime.multipart import MIMEMultipart
+from email.mime.text import MIMEText
 
 #Importing libraries for MongoDB
 import pymongo
@@ -43,12 +46,21 @@ import exampleOutputs as examples
 
 
 import nest_asyncio
+import sys
+import shutil
 nest_asyncio.apply()
 
-
 #Constants
-CONFIG_FILEPATH = "/home/sneha-ltim/DocumentDigitizer/config.json"
-ATTACHMENT_FOLDER = "/home/sneha-ltim/DocumentDigitizer/data/email_attachments"
+# Get the directory of the current script
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+
+# Construct the relative path to config.json
+CONFIG_FILEPATH = os.path.join(BASE_DIR, "../config.json")
+ATTACHMENT_FOLDER = os.path.join(BASE_DIR, "../data/upload_documents")
+
+# Optionally, add BASE_DIR to sys.path if you want to import modules from the project root
+sys.path.append(BASE_DIR)
+
 MODEL_NAME = "meta/llama-3.2-90b-vision-instruct"
 MODEL_NAME_CHEQUE = 'meta/llama-4-maverick-17b-128e-instruct'
 LLAMA3_2_90B_VISION_INSTRUCT_NIM_URL = "https://ai.api.nvidia.com/v1/gr/meta/llama-3.2-90b-vision-instruct/chat/completions"
@@ -148,11 +160,10 @@ def list_collections() -> List[str]:
 async def upload_files(files: List):
     """
     Function to upload files to the server and save them in a MongoDB collection.
-    Currently all files are saved in /home/sneha-ltim/DocumentDigitizer/data/email_attachments
+    Currently all files are saved in DocumentDigitizer/data/upload_documents folder.
     Args:
         files (List[str]): List of filepaths of files to be uploaded.
     """
-# async def upload_files(files: List[UploadFile] = File(...)):
     uploaded_files = []
     client = pymongo.MongoClient(MONGO_URI)
     db = client[MONGO_DB]
@@ -161,12 +172,12 @@ async def upload_files(files: List):
     for file in files[0]:
         # attachment_name = file.filename
         attachment_name = file.split("/")[-1]
-        attachment_path = os.path.join(ATTACHMENT_FOLDER, file)
-        # attachment_path = os.path.join(ATTACHMENT_FOLDER, attachment_name)
+        # attachment_path = os.path.join(ATTACHMENT_FOLDER, file)
+        attachment_path = os.path.join(ATTACHMENT_FOLDER, attachment_name)
         
-        # # Save the attachment to the folder
-        # with open(attachment_path, 'wb') as f:
-        #     f.write(await file.read())
+        # Save the attachment to the folder
+        # Copy the file from the given file path to the attachment folder using shutil
+        shutil.copy(file, attachment_path)
         
         # Add the attachment to the database
         attachment_data = {
@@ -257,8 +268,6 @@ async def extract_data(object_id: str):
     # Find the document with the given _id
     document = attachments_collection.find_one({'_id': object_id})
     file_path = document.get('attachment_path')
-    # file_path = "./data/email_attachments/cheque3original.jpg"
-    # file_path = "/home/sneha-ltim/DocumentDigitizer/data/upload_temp_documents/Rachel Davis.jpg"
     invoke_url = LLAMA3_2_90B_VISION_INSTRUCT_NIM_URL
     api_key = LLAMA3_2_90B_VISION_INSTRUCT_NIM_KEY
     headers = {
@@ -822,9 +831,6 @@ async def send_email(subject: str, body: str, receiver_email: str):
     msg['Subject'] = subject
     sender_email = "sender_email_address"
     sender_password = "sender_password"
-
-    sender_email = "u351720@gmail.com"
-    sender_password = "bzufgbnkhafgvgzk"
     
     msg.attach(MIMEText(body, 'plain'))
     

@@ -2,6 +2,9 @@
 import email
 from email.header import decode_header
 import imaplib
+import smtplib
+from email.mime.multipart import MIMEMultipart
+from email.mime.text import MIMEText
 
 #Constants
 ATTACHMENT_FOLDER = "./data/email_attachments"
