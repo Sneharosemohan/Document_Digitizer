@@ -17,6 +17,8 @@ def get_image_embedding(img_path):
     img_data = preprocess_input(img_data)
     embedding = base_model.predict(img_data)
     return embedding.flatten()
+
+
 # Function to compare face images
 def face_similarity_matching(img_path_1: str, img_path_2: str) -> Dict[str, str]:
     start_time = time.time()
@@ -28,6 +30,7 @@ def face_similarity_matching(img_path_1: str, img_path_2: str) -> Dict[str, str]
         "similarity_score": str(similarity_score),
         "time_taken": time_taken
     }
+
 
 # Function to compare signature images
 def similarity_matching(img_path_1: str, img_path_2: str) -> float:

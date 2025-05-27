@@ -6,7 +6,7 @@ langchain_mcp_adapters
 email
 FastAPI
 mcp
-
+fastapi_mcp
 
 
 

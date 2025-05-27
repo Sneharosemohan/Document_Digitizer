@@ -78,7 +78,7 @@ attachments_collection = db[MONGO_COLLECTION_ATTACHMENTS]
 
 
 # Initialize MCP server
-mcp = FastMCP("API Tools", host= MCP_SERVER_HOST, port=MCP_SERVER_PORT)
+mcp = FastMCP("Document Digitizer MCP Tools", host= MCP_SERVER_HOST, port=MCP_SERVER_PORT)
 
 
 @mcp.tool()
