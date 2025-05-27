@@ -1,0 +1,244 @@
+{
+  "nested_stack_analysis": {
+    "concurrency": {
+      "timeline_segments": [
+        [
+          1748370705.6216786,
+          1748370706.935962,
+          1
+        ],
+        [
+          1748370706.935962,
+          1748370706.9402192,
+          0
+        ],
+        [
+          1748370706.9402192,
+          1748370706.9945571,
+          1
+        ],
+        [
+          1748370706.9945571,
+          1748370706.9974132,
+          0
+        ],
+        [
+          1748370706.9974132,
+          1748370708.4106681,
+          1
+        ],
+        [
+          1748370708.4106681,
+          1748370708.4134974,
+          0
+        ],
+        [
+          1748370708.4134974,
+          1748370711.185348,
+          1
+        ],
+        [
+          1748370711.185348,
+          1748370711.188564,
+          0
+        ],
+        [
+          1748370711.188564,
+          1748370712.8787167,
+          1
+        ],
+        [
+          1748370712.8787167,
+          1748370712.8813896,
+          0
+        ],
+        [
+          1748370712.8813896,
+          1748370720.2846167,
+          1
+        ],
+        [
+          1748370720.2846167,
+          1748370720.2879977,
+          0
+        ],
+        [
+          1748370720.2879977,
+          1748370721.0219722,
+          1
+        ]
+      ],
+      "p50": 1.0,
+      "p90": 1.0,
+      "p95": 1.0,
+      "p99": 1.0
+    },
+    "node_metrics": {
+      "ca4340cf-2916-407c-85b5-d42391bca284": {
+        "uuid": "ca4340cf-2916-407c-85b5-d42391bca284",
+        "operation_type": "LLM",
+        "operation_name": "meta/llama-3.3-70b-instruct",
+        "start_time": 1748370705.6216786,
+        "end_time": 1748370706.935962,
+        "duration": 1.3142833709716797,
+        "self_time": 1.3142833709716797,
+        "subtree_time": 1.3142833709716797,
+        "concurrency_midpoint": 1.0,
+        "bottleneck_score": 1.3142833709716797
+      },
+      "5a2f8551-377f-4eb4-bad5-16dd05be525f": {
+        "uuid": "5a2f8551-377f-4eb4-bad5-16dd05be525f",
+        "operation_type": "TOOL",
+        "operation_name": "upload_files_tool",
+        "start_time": 1748370706.9402192,
+        "end_time": 1748370706.9945571,
+        "duration": 0.05433797836303711,
+        "self_time": 0.05433797836303711,
+        "subtree_time": 0.05433797836303711,
+        "concurrency_midpoint": 1.0,
+        "bottleneck_score": 0.05433797836303711
+      },
+      "557d2161-297f-4f0f-a6b3-896b45033704": {
+        "uuid": "557d2161-297f-4f0f-a6b3-896b45033704",
+        "operation_type": "LLM",
+        "operation_name": "meta/llama-3.3-70b-instruct",
+        "start_time": 1748370706.9974132,
+        "end_time": 1748370708.4106681,
+        "duration": 1.413254976272583,
+        "self_time": 1.413254976272583,
+        "subtree_time": 1.413254976272583,
+        "concurrency_midpoint": 1.0,
+        "bottleneck_score": 1.413254976272583
+      },
+      "1a14a348-2897-4796-a729-2ee63a52fc89": {
+        "uuid": "1a14a348-2897-4796-a729-2ee63a52fc89",
+        "operation_type": "TOOL",
+        "operation_name": "extract_data_tool",
+        "start_time": 1748370708.4134974,
+        "end_time": 1748370711.185348,
+        "duration": 2.7718505859375,
+        "self_time": 2.7718505859375,
+        "subtree_time": 2.7718505859375,
+        "concurrency_midpoint": 1.0,
+        "bottleneck_score": 2.7718505859375
+      },
+      "b331b29f-8d2b-444a-87b8-faa2c9ee7d5a": {
+        "uuid": "b331b29f-8d2b-444a-87b8-faa2c9ee7d5a",
+        "operation_type": "LLM",
+        "operation_name": "meta/llama-3.3-70b-instruct",
+        "start_time": 1748370711.188564,
+        "end_time": 1748370712.8787167,
+        "duration": 1.690152645111084,
+        "self_time": 1.690152645111084,
+        "subtree_time": 1.690152645111084,
+        "concurrency_midpoint": 1.0,
+        "bottleneck_score": 1.690152645111084
+      },
+      "075fc578-5a0b-406d-baeb-360c858f8a09": {
+        "uuid": "075fc578-5a0b-406d-baeb-360c858f8a09",
+        "operation_type": "TOOL",
+        "operation_name": "dd_add_memory_tool",
+        "start_time": 1748370712.8813896,
+        "end_time": 1748370720.2846167,
+        "duration": 7.403227090835571,
+        "self_time": 7.403227090835571,
+        "subtree_time": 7.403227090835571,
+        "concurrency_midpoint": 1.0,
+        "bottleneck_score": 7.403227090835571
+      },
+      "3541303a-9546-4e26-94a0-294093fe5873": {
+        "uuid": "3541303a-9546-4e26-94a0-294093fe5873",
+        "operation_type": "LLM",
+        "operation_name": "meta/llama-3.3-70b-instruct",
+        "start_time": 1748370720.2879977,
+        "end_time": 1748370721.0219722,
+        "duration": 0.7339744567871094,
+        "self_time": 0.7339744567871094,
+        "subtree_time": 0.7339744567871094,
+        "concurrency_midpoint": 1.0,
+        "bottleneck_score": 0.7339744567871094
+      }
+    },
+    "top_bottlenecks": [
+      {
+        "uuid": "075fc578-5a0b-406d-baeb-360c858f8a09",
+        "operation_type": "TOOL",
+        "operation_name": "dd_add_memory_tool",
+        "start_time": 1748370712.8813896,
+        "end_time": 1748370720.2846167,
+        "duration": 7.403227090835571,
+        "self_time": 7.403227090835571,
+        "subtree_time": 7.403227090835571,
+        "concurrency_midpoint": 1.0,
+        "bottleneck_score": 7.403227090835571
+      },
+      {
+        "uuid": "1a14a348-2897-4796-a729-2ee63a52fc89",
+        "operation_type": "TOOL",
+        "operation_name": "extract_data_tool",
+        "start_time": 1748370708.4134974,
+        "end_time": 1748370711.185348,
+        "duration": 2.7718505859375,
+        "self_time": 2.7718505859375,
+        "subtree_time": 2.7718505859375,
+        "concurrency_midpoint": 1.0,
+        "bottleneck_score": 2.7718505859375
+      },
+      {
+        "uuid": "b331b29f-8d2b-444a-87b8-faa2c9ee7d5a",
+        "operation_type": "LLM",
+        "operation_name": "meta/llama-3.3-70b-instruct",
+        "start_time": 1748370711.188564,
+        "end_time": 1748370712.8787167,
+        "duration": 1.690152645111084,
+        "self_time": 1.690152645111084,
+        "subtree_time": 1.690152645111084,
+        "concurrency_midpoint": 1.0,
+        "bottleneck_score": 1.690152645111084
+      },
+      {
+        "uuid": "557d2161-297f-4f0f-a6b3-896b45033704",
+        "operation_type": "LLM",
+        "operation_name": "meta/llama-3.3-70b-instruct",
+        "start_time": 1748370706.9974132,
+        "end_time": 1748370708.4106681,
+        "duration": 1.413254976272583,
+        "self_time": 1.413254976272583,
+        "subtree_time": 1.413254976272583,
+        "concurrency_midpoint": 1.0,
+        "bottleneck_score": 1.413254976272583
+      },
+      {
+        "uuid": "ca4340cf-2916-407c-85b5-d42391bca284",
+        "operation_type": "LLM",
+        "operation_name": "meta/llama-3.3-70b-instruct",
+        "start_time": 1748370705.6216786,
+        "end_time": 1748370706.935962,
+        "duration": 1.3142833709716797,
+        "self_time": 1.3142833709716797,
+        "subtree_time": 1.3142833709716797,
+        "concurrency_midpoint": 1.0,
+        "bottleneck_score": 1.3142833709716797
+      }
+    ]
+  },
+  "concurrency_spike_analysis": {
+    "concurrency_distribution": {
+      "1": 15.381081104278564,
+      "0": 0.01921248435974121
+    },
+    "p50_concurrency": 1.0,
+    "p90_concurrency": 1.0,
+    "p95_concurrency": 1.0,
+    "p99_concurrency": 1.0,
+    "spike_threshold": 7,
+    "spike_intervals": [],
+    "correlation_stats": {
+      "avg_prompt_tokens": 0.0,
+      "avg_total_tokens": 0.0
+    },
+    "average_latency_by_concurrency": {
+      "1": 2.1972973006112233
+    }
+  }
+}

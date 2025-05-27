@@ -17,7 +17,7 @@ general:
       - path: /save_data
         method: POST
         description: "Agent endpoint for documents ingestion."
-        file_parameters: {"name": "file_paths", "type": "UploadFile", "description": "File to upload.", "required": True}
+        # file_parameters: {"name": "file_paths", "type": "UploadFile", "description": "File to upload.", "required": True}
         function_name: upload_files_tool
      
 

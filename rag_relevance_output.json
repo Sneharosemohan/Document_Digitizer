@@ -1,0 +1,19 @@
+{
+  "average_score": 1.0,
+  "eval_output_items": [
+    {
+      "id": 1,
+      "score": 1.0,
+      "reasoning": {
+        "user_input": "Extract the name present in the file Rachel Davis.jpg",
+        "reference": "The name present in the file Rachel Davis.jpg is Rachel Davis.",
+        "response": "The name present in the file Rachel Davis.jpg is Rachel Davis.",
+        "retrieved_contexts": [
+          "{\n  \"message\": \"Files uploaded successfully\",\n  \"uploaded_files\": [\n    {\n      \"attachment_name\": \"Rachel Davis.jpg\",\n      \"attachment_path\": \"/home/sneha-ltim/DocumentDigitizer/data/email_attachments/Rachel Davis.jpg\",\n      \"id\": \"68360512c13e9a8bca4a8167\"\n    }\n  ]\n}",
+          "{\n  \"content\": {\n    \"id\": \"chat-7cfa11d3c93a454792d183ad9d6a8779\",\n    \"object\": \"chat.completion\",\n    \"created\": 1748370709,\n    \"model\": \"meta/llama-3.2-90b-vision-instruct\",\n    \"choices\": [\n      {\n        \"index\": 0,\n        \"message\": {\n          \"role\": \"assistant\",\n          \"content\": \"{\\\"license no\\\": \\\"Z050109014\\\", \\\"expires\\\": \\\"09/02/2026\\\", \\\"name and address\\\": \\\"Rachel Davis 5 Silk Rd Ganja Bus, MO 54321\\\", \\\"sex\\\": \\\"F\\\", \\\"ht\\\": \\\"5-10\\\", \\\"wt\\\": \\\"175 lb\\\", \\\"eyes\\\": \\\"BRO\\\", \\\"DOB\\\": \\\"05/04/1991\\\", \\\"signature\\\": \\\"yes\\\"}\"\n        },\n        \"logprobs\": null,\n        \"finish_reason\": \"stop\",\n        \"stop_reason\": null\n      }\n    ],\n    \"usage\": {\n      \"prompt_tokens\": 814,\n      \"total_tokens\": 901,\n      \"completion_tokens\": 87\n    },\n    \"prompt_logprobs\": null\n  }\n}",
+          "Memory added successfully. You can continue. Please respond to the user."
+        ]
+      }
+    }
+  ]
+}
